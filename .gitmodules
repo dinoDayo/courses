@@ -1,0 +1,3 @@
+[submodule "udemy/hashicorp-terraform-training/ultimate-terraform-course-for-devops"]
+	path = udemy/hashicorp-terraform-training/ultimate-terraform-course-for-devops
+	url = https://github.com/cloudiac18/ultimate-terraform-course-for-devops.git

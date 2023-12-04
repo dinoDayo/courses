@@ -8,6 +8,13 @@ resource "aws_security_group" "webserver_sg" {
     }
 
     ingress {
+        from_port = "${var.http_port}"
+        to_port = "${var.http_port}"
+        protocol = "tcp"
+        security_groups = [ "sg-0ccf5d0bc4ffeccfb" ]
+    }
+
+    ingress {
         from_port = "${var.ssh_port}"
         to_port = "${var.ssh_port}"
         protocol = "tcp"

@@ -1,10 +1,10 @@
-resource aws_launch_configuration "my-first-launch-conf" {
-    name = "webserver-launch"
-    image_id = "${var.ami}"
-    instance_type = "${var.instance_type}"
-    security_groups = ["${aws_security_group.webserver_sg.id}"]
-    key_name = "${var.key_name}"
-    user_data = <<-EOF
+resource "aws_launch_configuration" "my-first-launch-conf" {
+  name            = "webserver-launch"
+  image_id        = var.ami
+  instance_type   = var.instance_type
+  security_groups = ["${aws_security_group.webserver_sg.id}"]
+  key_name        = var.key_name
+  user_data       = <<-EOF
     #!/bin/bash -xe
     exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1 # logs everything executed in script to a file
     /usr/bin/apt-get update # update apt-get

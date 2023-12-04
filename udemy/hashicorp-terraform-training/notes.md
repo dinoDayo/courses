@@ -52,14 +52,15 @@
     - `terraform graph`: creates a dependency graph that can be used to view resource dependencies.
     - `terraform <cmd> -target=<taget-resource>`: allows users to apply terraform commands to only one resource as opposed to all of them
     - `terraform state`: provides current state of the terraform resources.
+    - `terraform output`: view output variables associated with terraform script
 - Declaring input variables:
-    - ```
-    variable "<variable_name>" {
-        description = "variable description for developer support"
-        type = list | map | string | number | bool | set | object | tuple | etc.
-        default = [] | {} | "" | etc.
-        }
-    ```
+```
+variable "<variable_name>" {
+    description = "variable description for developer support"
+    type = list | map | string | number | bool | set | object | tuple | etc.
+    default = [] | {} | "" | etc.
+    }
+```
 - Invalid input variable names:
     - `Source`
     - `Locals`
@@ -69,7 +70,17 @@
     - `For_each`
     - `Lifecycle`
     - `Depends_on`
-
+- Declaring output values:
+```
+output "output_var_name" {
+    description = "output description for developer support"
+    value = "${resource_type.resource_name.resource_attr}"
+    sensitive = true | false --> determines whether or not output var will be accessible to users without access to the .tfstate file
+    depends_on = [] --> a method for explicitly defining depnendencies between modules
+    }
+```
+- Terraform Readonly remote state: a method for configuring readonly remote state storage for terraform. This allows separate terraform stacks to reference the same resource using the output variables stored in readonly remote state storage. See lab 06-deploy-readonly-remote-storage-stage for a functional example of this.
+- 
  
 
 

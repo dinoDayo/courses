@@ -80,6 +80,11 @@ output "output_var_name" {
     }
 ```
 - Terraform Readonly remote state: a method for configuring readonly remote state storage for terraform. This allows separate terraform stacks to reference the same resource using the output variables stored in readonly remote state storage. See lab 06-deploy-readonly-remote-storage-stage for a functional example of this.
+    - ie. `"${data.terraform_remote_state.global_sg.outputs.global_sg_id}"`: provides access to the global security group id
+    - NOTE: I can only get this to work with terraform version 1.5.7. See the open issue explaining why this is happening [here](https://github.com/hashicorp/terraform/issues/34223).
+    - Install steps for terraform version 1.5.7:
+        - install terraform version [here](https://releases.hashicorp.com/terraform/)
+        -  
 - 
  
 

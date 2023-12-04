@@ -53,22 +53,22 @@
     - `terraform <cmd> -target=<taget-resource>`: allows users to apply terraform commands to only one resource as opposed to all of them
     - `terraform state`: provides current state of the terraform resources.
 - Declaring input variables:
-```
-variable "<variable_name>" {
-    description = "variable description for developer support"
-    type = list | map | string | number | bool | set | object | tuple | etc.
-    default = [] | {} | "" | etc.
-}
-```
+    - ```
+    variable "<variable_name>" {
+        description = "variable description for developer support"
+        type = list | map | string | number | bool | set | object | tuple | etc.
+        default = [] | {} | "" | etc.
+        }
+    ```
 - Invalid input variable names:
-    - Source
-    - Locals
-    - Version
-    - Providers
-    - Count
-    - For_each
-    - Lifecycle
-    - Depends_on
+    - `Source`
+    - `Locals`
+    - `Version`
+    - `Providers`
+    - `Count`
+    - `For_each`
+    - `Lifecycle`
+    - `Depends_on`
 
  
 

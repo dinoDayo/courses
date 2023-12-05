@@ -38,7 +38,6 @@
     - `concat(list1, list2, list3)`: concatenates values into a single parameter.
     - `Format(format, args)`: formats string using provided format.
     - `Join(delim, list)`: joins lists into single parameter. 
-- Terraform also supports a `data resource` template, where a collection of configurations and variable declarations can be defined in a separate file and refernced from a separate terraform script.
 - Some important Terraform commands:
     - `terraform show`: outputs human-readable version of the terraform state file 
     - `terraform validate`: validates the syntax of your terraform code
@@ -81,13 +80,32 @@ output "output_var_name" {
 ```
 - Terraform Readonly remote state: a method for configuring readonly remote state storage for terraform. This allows separate terraform stacks to reference the same resource using the output variables stored in readonly remote state storage. See lab 06-deploy-readonly-remote-storage-stage for a functional example of this.
     - ie. `"${data.terraform_remote_state.global_sg.outputs.global_sg_id}"`: provides access to the global security group id
-    - NOTE: I can only get this to work with terraform version 1.5.7. See the open issue explaining why this is happening [here](https://github.com/hashicorp/terraform/issues/34223).
-    - Install steps for terraform version 1.5.7:
-        - install terraform version [here](https://releases.hashicorp.com/terraform/)
-        -  
-- 
- 
-
+    - NOTE: Any/all resources referenced in the `backend` clause must exist BEFORE they are referenced.
+- Terraform data sources allow data to be fetched or computer for use elsewhere in a given terraform configuration. They are declared using the following syntax:
+```
+data "Provider_type" "Name" {
+    arguments...
+}
+```
+- Terraform's `data source` templates enable a collection of configurations and variable declarations to be defined in a separate file and refernced from a separate terraform script. All data sources can be queried with filters to, for example, support the retrieval of the most recent version of the data source. The data provided in the data source declaration is what is used to filter the data objects returned. The aws-related data sources supported by terraform include but are not limited to the following list:
+    - `aws_availability_zone`
+        - fields: `Name, Region, Name_suffix, state, Zone_id`
+    - `aws_availability_zones`
+        - fields: `Names, Zone_ids`
+    - `aws_billing_service_account`
+        - fields: `Names, Zone_ids`
+    - `aws_arn`
+        - fields: `Partition, Service, Region, account, resource`
+    - `aws_caller_identity`
+        - fields: `Account_id, Arn, User_id`
+    - `aws_ip_ranges`
+        - fields: `Cidr_blocks, Ipv6_cidr_blocks, Create_date, Sync_token`
+    - `aws_partition`
+        - fields: `Partition, Dns_suffix`
+    - `aws_region`
+        - fields: `Name, Endpoint, description`
+    - `aws_iam_policy_document`
+        - fields: `json`
 
 
 

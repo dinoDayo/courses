@@ -14,7 +14,7 @@ variable "instance_type" {
 }
 
 variable "cluster" {
-  default="microservice"
+
 }
 
 variable "region" {

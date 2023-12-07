@@ -40,14 +40,14 @@
     - `Join(delim, list)`: joins lists into single parameter. 
 - Some important Terraform commands:
     - `terraform show`: outputs human-readable version of the terraform state file 
-    - `terraform validate`: validates the syntax of your terraform code
+    - `terraform validate`: validates the syntax of your terraform code. Good to run after `terraform plan`
     - `terraform plan`: shows a preview of the resources that are going to be created/edited/removed with your code
     - `terraform apply`: applies plan defined in terraform plan
     - `terraform apply-auto-approve`: applies plan defined in terraform plan in non-interactive manner
     - `terraform destroy`: destroys terraform managed infrastructure
     - `terraform fmt`: formats your terraform code to reflect standard formatting practices
     - `terraform taint`: manually marks a resource for recreation meaning a given resource will be removed and recreated upon every deploy.
-    - `terraform get`: Downloads and installs the latest module versions for your terraform code
+    - `terraform get`: Downloads and installs the latest module versions for your terraform code. Good to run if a local module is replaced with one hosted in a git repo.
     - `terraform graph`: creates a dependency graph that can be used to view resource dependencies.
     - `terraform <cmd> -target=<taget-resource>`: allows users to apply terraform commands to only one resource as opposed to all of them
     - `terraform state`: provides current state of the terraform resources.
@@ -69,7 +69,7 @@ variable "<variable_name>" {
     - `For_each`
     - `Lifecycle`
     - `Depends_on`
-- Declaring output values:
+- Syntax for declaring output values:
 ```
 output "output_var_name" {
     description = "output description for developer support"
@@ -77,6 +77,10 @@ output "output_var_name" {
     sensitive = true | false --> determines whether or not output var will be accessible to users without access to the .tfstate file
     depends_on = [] --> a method for explicitly defining depnendencies between modules
     }
+```
+- Syntax for accessing module output values:
+```
+"${module.module_name.OUTPUT_VARIABLE_NAME}"
 ```
 - Terraform Readonly remote state: a method for configuring readonly remote state storage for terraform. This allows separate terraform stacks to reference the same resource using the output variables stored in readonly remote state storage. See lab 06-deploy-readonly-remote-storage-stage for a functional example of this.
     - ie. `"${data.terraform_remote_state.global_sg.outputs.global_sg_id}"`: provides access to the global security group id
@@ -106,6 +110,34 @@ data "Provider_type" "Name" {
         - fields: `Name, Endpoint, description`
     - `aws_iam_policy_document`
         - fields: `json`
+- Terraform Module GOTCHA's:
+    - always parametrize the hard-coded values in your modules as variable declarations in a separate file, then reference them using interpolation. This will ensure your configurations are flexible for a given module depending on your desired use-case.
+    - when declaring resources, always prioritize separate declarations over inline declarations. The following aws resources can be declared inline OR as separate resources, but it is still recommended to declare them as separate resources whenever possible:
+        - `Security Group rules` ie: A `security_group.tf` file would have the following structure:
+            - `security_group_declaration`
+            - `security_group_ingress_rule_1_declaration`
+            - `security_group_egress_rule_1_declaration`
+            - `security_group_egress_rule_2_declaration`
+        - `Route Tables`
+        - `Network ACL`
+        - `Elastic Load Balancer (ELB)`
+- Terraform Module Versioning:
+    - In order to manage multiple versions of a given module in terraform, git tags can be used. The following example url show how version `v0.0.8` of a given module can be retrieved from github as a terraform module using git tags;
+        - Module source url format: `{git::}{https://githubRepoUrl.git//}{modulePath/within/repo?}{gitTagVersion}`
+        - Module source url example: `git::https://github.com/cloudiac18/ultimate-terraform-course-for-devops.git//Section-05-modules/modules/webservers-elb-asg?ref=v0.0.8`
+
+## Open Questions:
+- General debugging; How does one get more verbose error messages when a given terraform script fails?
+- For Section 05-terraform-module-basics, why am I seeing the following error when I run `terraform apply`? The error:
+```
+│ Error: creating Route53 Hosted Zone: InvalidVPCId: The VPC: vpc-cd8735b7 in region us-east-1 that you provided is not authorized to make the association.
+│       status code: 400, request id: 2388e5f3-3ec1-4f08-82d6-b77d6353fd7f
+│ 
+│   with module.webservers.aws_route53_zone.main,
+│   on ../../module/webservers-elb-asg/route53.tf line 1, in resource "aws_route53_zone" "main":
+│    1: resource "aws_route53_zone" "main" {
+```
+    - **ANSWER**: This was happenning because I had a vpc_id variable declared in two places; the module and the stack where I was deploying that module. The variable value in the stack was overwriting the variable value in the module, which led to the error message pasted above.
 
 
 

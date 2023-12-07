@@ -1,8 +1,8 @@
 module "webservers" {
 #  source        = "git::https://github.com/cloudiac18/ultimate-terraform-course-for-devops.git//Section-05-modules/modules/webservers-elb-asg?ref=v0.0.11"
   source = "../../module/webservers-elb-asg"
-  instance_type = "t2.micro"
-  environment = "stage"
+  instance_type = "t2.medium" # overriding default instance_type
+  environment = "stage" 
   vpc_id = "${var.vpc_id}" 
   cluster= "stage"
 }

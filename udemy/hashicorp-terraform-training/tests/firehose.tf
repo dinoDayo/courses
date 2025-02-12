@@ -24,7 +24,26 @@ resource "aws_kinesis_firehose_delivery_stream" "test_delivery_stream" {
     error_output_prefix = "errors/year=!{timestamp:yyyy}/month=!{timestamp:MM}/day=!{timestamp:dd}/hour=!{timestamp:HH}/!{firehose:error-output-type}/"
     processing_configuration {
       enabled = "true"
-      # JQ processor example
+      
+      # Multi-record deaggregation processor example (needed to support batched log streaming)
+      processors {
+        type = "RecordDeAggregation"
+        parameters {
+          parameter_name  = "SubRecordType"
+          parameter_value = "JSON"
+        }
+      }
+
+      # New line delimiter processor example (makes parsing log batches easier)
+      processors {
+        type = "AppendDelimiterToRecord"
+        parameters {
+            parameter_name = "Delimiter"
+            parameter_value = "IyMjIw=="    # NOTE: 'IyMjIw==' is the base-64 encoded format of '####'
+        }
+      }
+
+      # JQ processor example (actual parsing logic for a given log)
       processors {
         type = "MetadataExtraction"
         parameters {
